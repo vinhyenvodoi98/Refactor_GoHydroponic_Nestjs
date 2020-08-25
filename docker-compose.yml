@@ -8,7 +8,7 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./back-end:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./back-end/node_modules:/usr/src/app/node_modules
     ports:
       - '4000:4000'
     depends_on:
@@ -22,7 +22,7 @@ services:
     container_name: 'postgres'
     restart: always
     environment:
-      POSTGRES_DB: minano_betonamugo
+      POSTGRES_DB: hydroponic
       POSTGRES_USER: root
       POSTGRES_PASSWORD: '123456'
     tty: true
