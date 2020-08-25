@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  back-end:
+    build: ./back-end
+    container_name: back-end
+    restart: unless-stopped
+    working_dir: /usr/src/app
+    volumes:
+      - ./back-end:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '4000:4000'
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    command: 'yarn start:dev'
+
+  postgres:
+    image: postgres:12-alpine
+    container_name: 'postgres'
+    restart: always
+    environment:
+      POSTGRES_DB: minano_betonamugo
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: '123456'
+    tty: true
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  adminer:
+    image: adminer
+    container_name: 'adminer'
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
