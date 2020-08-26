@@ -13,6 +13,7 @@ services:
       - '4000:4000'
     depends_on:
       - postgres
+      - mongo
     networks:
       - app-network
     command: 'yarn start:dev'
@@ -29,7 +30,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./db_data:/var/lib/postgresql/data
+      - ./db_data/postgres:/var/lib/postgresql/data
     networks:
       - app-network
 
@@ -39,6 +40,32 @@ services:
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: '123456'
+    volumes:
+      - ./db_data/mongo/db:/data/db
+      - ./db_data/mongo/configdb:/data/configdb
+    networks:
+      - app-network
+
+  mongo-express:
+    image: mongo-express
+    container_name: 'mongo-express'
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: '123456'
     networks:
       - app-network
 
